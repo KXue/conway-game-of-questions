@@ -297,4 +297,17 @@ public class CharacterControl : MonoBehaviour {
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
+	/// <summary>
+	/// Sent when another object enters a trigger collider attached to this
+	/// object (2D physics only).
+	/// </summary>
+	/// <param name="other">The other Collider2D involved in this collision.</param>
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		Debug.Log("Triggered");
+		if (other.gameObject.CompareTag ("Projectile"))
+        {
+            Debug.Log("Hit");
+        }
+	}
 }
