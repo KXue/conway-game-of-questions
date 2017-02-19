@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum PlayerDirection : sbyte{LEFT = -1, RIGHT = 1}
+public enum PlayerDirection : sbyte{LEFT = -1, RIGHT = 1};
+public delegate void PlayerHitDelegate();
 public class CharacterControl : MonoBehaviour {
 	public float m_MaxHorizontalSpeed;
 	public float m_MaxVerticalSpeed;
@@ -25,6 +26,7 @@ public class CharacterControl : MonoBehaviour {
 	public LayerMask m_PlatformLayer;
 	public BoxCollider2D m_BoxCollider;
 	public Transform m_CursorTransform;
+	public PlayerHitDelegate m_PlayerHit;
 	private Rigidbody2D m_RigidBody;
 	private Animator m_Anim;
 	private byte m_NumJumps = 0;
@@ -304,10 +306,9 @@ public class CharacterControl : MonoBehaviour {
 	/// <param name="other">The other Collider2D involved in this collision.</param>
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		Debug.Log("Triggered");
-		if (other.gameObject.CompareTag ("Projectile"))
+		if (other.gameObject.CompareTag ("Projectile") && m_PlayerHit != null)
         {
-            Debug.Log("Hit");
+            m_PlayerHit();
         }
 	}
 }
