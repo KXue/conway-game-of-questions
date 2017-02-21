@@ -32,7 +32,6 @@ public class EnemyFactory : MonoBehaviour {
 			enemy.m_TargetPlayer = m_Player;
 			enemy.m_EnemyFactory = this;
 			m_StartTime = Time.time;
-			Debug.Log(m_EnemySpawnInterval);
 			if(m_EnemySpawnInterval > m_MinEnemySpawnInterval){
 				m_EnemySpawnInterval *= m_EnemySpawnIntervalDecayFactor;
 			}

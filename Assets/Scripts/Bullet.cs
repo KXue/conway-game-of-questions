@@ -13,12 +13,10 @@ public class Bullet : MonoBehaviour {
 	}
 	public void SetChar(char text){
 		int alphabetIndex = char.ToUpper(text) - 'A';
-		Debug.Log(m_SpriteRenderer);
-		Debug.Log(m_EnemyFactory);
 		m_SpriteRenderer.sprite = m_EnemyFactory.sprites[alphabetIndex];
 	}
 	// Update is called once per frame
-	void Update () {
-		transform.position += m_DirectionVector * m_Speed;
+	void FixedUpdate () {
+		transform.position += m_DirectionVector * m_Speed * Time.deltaTime;
 	}
 }

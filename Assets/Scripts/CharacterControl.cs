@@ -18,6 +18,7 @@ public class CharacterControl : MonoBehaviour {
 	public float m_DashTime;
 	public float m_SqrDeadZone;
 	public float m_CollisionDeadZone;
+	public bool m_IsInvincible;
 	public bool m_Mario;
 	public bool m_OmniDash;
 	public byte m_TotalNumJumps;
@@ -306,7 +307,7 @@ public class CharacterControl : MonoBehaviour {
 	/// <param name="other">The other Collider2D involved in this collision.</param>
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (other.gameObject.CompareTag ("Projectile") && m_PlayerHit != null)
+		if (!m_IsInvincible && other.gameObject.CompareTag ("Projectile") && m_PlayerHit != null)
         {
             m_PlayerHit();
         }

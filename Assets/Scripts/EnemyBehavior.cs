@@ -18,7 +18,6 @@ public class EnemyBehavior : MonoBehaviour {
 	private int m_MessageIndex = 0;
 	// Use this for initialization
 	void Start () {
-		Debug.Log(m_EnemyFactory);
 		m_StartTime = Time.time;
 		m_StartPosition = transform.position;
 	}
