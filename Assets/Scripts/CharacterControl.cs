@@ -25,7 +25,7 @@ public class CharacterControl : MonoBehaviour {
 	public byte  m_TotalNumDashes;
 	public byte m_TotalNumBlinks;
 	public LayerMask m_PlatformLayer;
-	public BoxCollider2D m_BoxCollider;
+	public SpriteRenderer m_SpriteRenderer;
 	public Transform m_CursorTransform;
 	public PlayerHitDelegate m_PlayerHit;
 	private Rigidbody2D m_RigidBody;
@@ -90,7 +90,7 @@ public class CharacterControl : MonoBehaviour {
 	private void UpdateCursor(){
 		float xOffset = 0;
 		float yOffset = 0;
-		Vector3 halfSize = m_BoxCollider.bounds.extents;
+		Vector3 halfSize = m_SpriteRenderer.bounds.extents;
 		//right of player
 		if(m_BlinkDirection.x > 0){
 			xOffset = halfSize.x;
@@ -242,9 +242,9 @@ public class CharacterControl : MonoBehaviour {
 		}
 	}
 	private void CheckGrounded(){
-		Vector3 bottomLeft = m_BoxCollider.bounds.min;
+		Vector3 bottomLeft = m_SpriteRenderer.bounds.min;
 		float left = bottomLeft.x + m_CollisionDeadZone;
-		float right = left + m_BoxCollider.size.x - 2 * m_CollisionDeadZone;
+		float right = left + m_SpriteRenderer.bounds.size.x - 2 * m_CollisionDeadZone;
 		float bottom = bottomLeft.y - m_Epsilon;
 		
 		bool grounded = Physics2D.Linecast(new Vector2(left, bottom), new Vector2(right, bottom), m_PlatformLayer);
@@ -259,14 +259,14 @@ public class CharacterControl : MonoBehaviour {
 		}
 	}
 	private void CheckWalled(){
-		Vector3 max = m_BoxCollider.bounds.max;
-		Vector3 size = m_BoxCollider.bounds.size;
+		Vector3 max = m_SpriteRenderer.bounds.max;
+		Vector3 size = m_SpriteRenderer.bounds.size;
 		Vector2 topRight = new Vector2(max.x + m_Epsilon, max.y - m_CollisionDeadZone);
 		Vector2 bottomLeft = new Vector2(max.x - size.x - m_Epsilon, max.y - size.y + m_CollisionDeadZone);
 		RaycastHit2D hit = Physics2D.Linecast(topRight, bottomLeft, m_PlatformLayer);
 		bool walled = false;
 		if(hit){
-			float direction = hit.point.x - m_BoxCollider.bounds.center.x;
+			float direction = hit.point.x - m_SpriteRenderer.bounds.center.x;
 			walled = m_UserHAxisValue * direction > 0;
 		}
 		if(walled != m_IsWalled){
