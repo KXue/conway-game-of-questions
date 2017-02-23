@@ -7,8 +7,6 @@ public class Bullet : MonoBehaviour {
 	public float m_LifeTime;
 	public Vector3 m_DirectionVector;
 	public SpriteRenderer m_SpriteRenderer;
-	public int m_MaxEnemySize;
-	private List<EnemyBehavior> m_EnemyPool;
 	void OnEnable()
 	{
 		Invoke("Destroy", m_LifeTime);

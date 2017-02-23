@@ -10,17 +10,11 @@ public class EnemyBehavior : MonoBehaviour {
 	public float m_BulletIntervalTime;
 	public Vector3 m_EndPosition;
 	public CharacterControl m_TargetPlayer;
-	public GameObject m_BulletPrefab;
 	private  Vector3 m_StartPosition;
 	private float m_StartTime;
 	private bool m_ReachedTarget = false;
 	private bool m_ShotProjectiles = false;
 	private int m_MessageIndex = 0;
-	private Pool m_BulletPool;
-	void Start()
-	{
-		m_BulletPool = new Pool(m_BulletPrefab, m_LongestWord);
-	}
 	void OnEnable () {
 		m_StartTime = Time.time;
 		m_StartPosition = transform.position;
@@ -68,8 +62,8 @@ public class EnemyBehavior : MonoBehaviour {
 		if(Time.time - m_StartTime > m_BulletIntervalTime){
 			Vector3 TargetVector = m_TargetPlayer.transform.position - transform.position;
 			GameObject bullet;
-			if(m_BulletPool.TryGetInactiveObject(out bullet)){
-				bullet.transform.position = transform.position + 0.8f * TargetVector.normalized;
+			if(SingletonPool.Instance.TryGetInactiveObject(out bullet)){
+				bullet.transform.position = transform.position;
 				bullet.transform.rotation = transform.rotation;
 
 				Bullet bulletScript = bullet.GetComponent<Bullet>();

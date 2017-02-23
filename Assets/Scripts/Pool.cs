@@ -1,7 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
+public class SingletonPool : Pool{
+	private static SingletonPool m_instance;
+	private static int length = 10;
+	private static GameObject prefab;
+	public static SingletonPool Instance{
+		get{
+			if(m_instance == null){
+				m_instance = new SingletonPool(prefab, length, true);
+			}
+			return m_instance;
+		}
+	}
+	public static void SetLength(int newLength){
+		length = newLength;
+	}
+	public static void SetPrefab(GameObject newPrefab){
+		prefab = newPrefab;
+	}
+	public static void ForceInstantiate(GameObject forcedPrefab, int forcedLength, bool isGrowing = false){
+		m_instance = new SingletonPool(forcedPrefab, forcedLength, isGrowing);
+	}
+	public SingletonPool(GameObject prefab, int length, bool isGrowing = false)
+	: base(prefab, length, isGrowing){
+	}
+}
 public class Pool{
 	private List<GameObject> m_Pool;
 	private bool m_IsGrowing;
@@ -20,6 +45,16 @@ public class Pool{
 		GameObject obj = GameObject.Instantiate(m_Prefab);
 		obj.SetActive(false);
 		return obj;
+	}
+	public void DisableAll(){
+		foreach(GameObject obj in m_Pool){
+			obj.SetActive(false);
+		}
+	}
+	public void ForEach(Action<GameObject> action){
+		foreach(GameObject obj in m_Pool){
+			action(obj);
+		}
 	}
 	public bool TryGetInactiveObject(out GameObject retObj){
 		bool foundObject = false;

@@ -5,21 +5,35 @@ using UnityEngine;
 public class EnemyFactory : MonoBehaviour {
 	public CharacterControl m_Player;
 	public int m_MaxEnemies;
+	public float m_InitialEnemyCount;
+	public int m_EnemyCountDeviation;
+	public int m_EnemyCountCap;
+	public float m_EnemyCountGrowthRate;
 	public float m_InitialEnemySpawnInterval;
 	public float m_EnemySpawnIntervalDecayFactor;
 	public float m_MinEnemySpawnInterval;
 	public GameObject m_EnemyPrefab;
+	public GameObject m_BulletPrefab;
 	public LayerMask m_PlatformLayer;
 	public Transform m_SpawnLocation;
 	public string[] m_Words;
 	private float m_StartTime;
 	private float m_EnemySpawnInterval;
+	private float m_EnemyCount;
 	private Pool m_EnemyPool;
 	// Use this for initialization
 	void Awake () {
 		m_EnemyPool = new Pool(m_EnemyPrefab, m_MaxEnemies, true);
-		EnemyBehavior.m_LongestWord = GetLongestWord();
+		m_EnemyPool.ForEach(SetTargetPlayer);
+
+		int longestWord = GetLongestWord();
+		EnemyBehavior.m_LongestWord = longestWord;
+		SingletonPool.ForceInstantiate(m_BulletPrefab, longestWord * 2 * m_EnemyCountCap, true);
 		Reset();
+	}
+	private void SetTargetPlayer(GameObject obj){
+		EnemyBehavior behavior = obj.GetComponent<EnemyBehavior>();
+		behavior.m_TargetPlayer = m_Player;
 	}
 	int GetLongestWord(){
 		int longestWord = 0;
@@ -31,28 +45,36 @@ public class EnemyFactory : MonoBehaviour {
 		return longestWord;
 	}
 	public void Reset(){
+		m_EnemyCount = m_InitialEnemyCount;
 		m_StartTime = Time.time;
 		m_EnemySpawnInterval = m_InitialEnemySpawnInterval;
 	}
 	// Update is called once per frame
 	void Update () {
 		if(Time.time - m_StartTime > m_EnemySpawnInterval){
-			GameObject enemy;
-			if(m_EnemyPool.TryGetInactiveObject(out enemy)){
-				enemy.transform.position = m_SpawnLocation.transform.position;
-				enemy.transform.rotation = m_SpawnLocation.transform.rotation;
-				Debug.Log(enemy.transform.position);
-				EnemyBehavior enemyScript = enemy.GetComponent<EnemyBehavior>();
-				enemyScript.m_BulletText = PickAWord();
-				enemyScript.m_EndPosition = PickASpot();
-				enemyScript.m_TargetPlayer = m_Player;
-				m_StartTime = Time.time;
+			int enemyCount = Mathf.Min(m_EnemyCountCap, (int)Random.Range(m_EnemyCount - m_EnemyCountDeviation, m_EnemyCount + m_EnemyCountDeviation));
+			for(int i = 0; i < enemyCount; i++){
+				GameObject enemy;
 				
-				enemy.SetActive(true);
+				if(m_EnemyPool.TryGetInactiveObject(out enemy)){
+					enemy.transform.position = m_SpawnLocation.transform.position;
+					enemy.transform.rotation = m_SpawnLocation.transform.rotation;
 
-				if(m_EnemySpawnInterval > m_MinEnemySpawnInterval){
-					m_EnemySpawnInterval *= m_EnemySpawnIntervalDecayFactor;
+					EnemyBehavior enemyScript = enemy.GetComponent<EnemyBehavior>();
+					enemyScript.m_BulletText = PickAWord();
+					enemyScript.m_EndPosition = PickASpot();
+
+					m_StartTime = Time.time;
+					
+					enemy.SetActive(true);
+
+					if(m_EnemySpawnInterval > m_MinEnemySpawnInterval){
+						m_EnemySpawnInterval *= m_EnemySpawnIntervalDecayFactor;
+					}
 				}
+			}
+			if(m_EnemyCount < m_EnemyCountCap){
+				m_EnemyCount *= m_EnemyCountGrowthRate;
 			}
 		}
 	}
