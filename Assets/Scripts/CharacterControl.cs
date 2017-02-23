@@ -78,7 +78,7 @@ public class CharacterControl : MonoBehaviour {
 		GetDashInput();
 	}
 	private void GetBlinkDirection(){
-		Vector2 blinkDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		Vector2 blinkDirection = new Vector2(Input.GetAxis("RHorizontal"), Input.GetAxis("RVertical"));
 		if(blinkDirection.sqrMagnitude < m_SqrDeadZone){
 			m_BlinkDirection = new Vector2((float)m_Direction, 0f);
 		}

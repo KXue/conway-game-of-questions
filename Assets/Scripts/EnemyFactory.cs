@@ -3,21 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyFactory : MonoBehaviour {
-	public Sprite[] sprites;
 	public CharacterControl m_Player;
+	public int m_MaxEnemies;
 	public float m_InitialEnemySpawnInterval;
 	public float m_EnemySpawnIntervalDecayFactor;
 	public float m_MinEnemySpawnInterval;
-	public EnemyBehavior m_EnemyPrefab;
+	public GameObject m_EnemyPrefab;
 	public LayerMask m_PlatformLayer;
+	public Transform m_SpawnLocation;
 	public string[] m_Words;
-	private Transform m_SpawnLocation;
 	private float m_StartTime;
 	private float m_EnemySpawnInterval;
+	private Pool m_EnemyPool;
 	// Use this for initialization
 	void Awake () {
-		m_SpawnLocation = transform.FindChild("EnemySpawnPoint");
+		m_EnemyPool = new Pool(m_EnemyPrefab, m_MaxEnemies, true);
+		EnemyBehavior.m_LongestWord = GetLongestWord();
 		Reset();
+	}
+	int GetLongestWord(){
+		int longestWord = 0;
+		for(int i = 0; i < m_Words.Length; i++){
+			if(m_Words[i].Length > longestWord){
+				longestWord = m_Words[i].Length;
+			}
+		}
+		return longestWord;
 	}
 	public void Reset(){
 		m_StartTime = Time.time;
@@ -26,14 +37,22 @@ public class EnemyFactory : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(Time.time - m_StartTime > m_EnemySpawnInterval){
-			EnemyBehavior enemy = Instantiate(m_EnemyPrefab, m_SpawnLocation);
-			enemy.m_BulletText = PickAWord();
-			enemy.m_EndPosition = PickASpot();
-			enemy.m_TargetPlayer = m_Player;
-			enemy.m_EnemyFactory = this;
-			m_StartTime = Time.time;
-			if(m_EnemySpawnInterval > m_MinEnemySpawnInterval){
-				m_EnemySpawnInterval *= m_EnemySpawnIntervalDecayFactor;
+			GameObject enemy;
+			if(m_EnemyPool.TryGetInactiveObject(out enemy)){
+				enemy.transform.position = m_SpawnLocation.transform.position;
+				enemy.transform.rotation = m_SpawnLocation.transform.rotation;
+				Debug.Log(enemy.transform.position);
+				EnemyBehavior enemyScript = enemy.GetComponent<EnemyBehavior>();
+				enemyScript.m_BulletText = PickAWord();
+				enemyScript.m_EndPosition = PickASpot();
+				enemyScript.m_TargetPlayer = m_Player;
+				m_StartTime = Time.time;
+				
+				enemy.SetActive(true);
+
+				if(m_EnemySpawnInterval > m_MinEnemySpawnInterval){
+					m_EnemySpawnInterval *= m_EnemySpawnIntervalDecayFactor;
+				}
 			}
 		}
 	}

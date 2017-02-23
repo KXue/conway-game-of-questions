@@ -4,26 +4,31 @@ using UnityEngine;
 using System;
 
 public class EnemyBehavior : MonoBehaviour {
+	public static int m_LongestWord;
 	public string m_BulletText;
 	public float m_TransitionTime;
 	public float m_BulletIntervalTime;
 	public Vector3 m_EndPosition;
 	public CharacterControl m_TargetPlayer;
-	public EnemyFactory m_EnemyFactory;
-	public Bullet m_BulletPrefab;
+	public GameObject m_BulletPrefab;
 	private  Vector3 m_StartPosition;
 	private float m_StartTime;
 	private bool m_ReachedTarget = false;
 	private bool m_ShotProjectiles = false;
 	private int m_MessageIndex = 0;
-	// Use this for initialization
-	void Start () {
+	private Pool m_BulletPool;
+	void Start()
+	{
+		m_BulletPool = new Pool(m_BulletPrefab, m_LongestWord);
+	}
+	void OnEnable () {
 		m_StartTime = Time.time;
 		m_StartPosition = transform.position;
+		m_ReachedTarget = false;
+		m_ShotProjectiles = false;
+		m_MessageIndex = 0;
 	}
-	
-	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		UpdatePosition();
 	}
 	void UpdatePosition(){
@@ -47,31 +52,42 @@ public class EnemyBehavior : MonoBehaviour {
 			ShootQuestion();
 		}
 		else if(m_ShotProjectiles && timeFractionElapsed <= 1 && timeFractionElapsed >=0){
-			float quadTime = QuadraticLerp(timeFractionElapsed);
-			transform.position = Vector3.Lerp(m_StartPosition, m_EndPosition, 1 - quadTime);
+			float quadTime = QuadraticLerp(1 - timeFractionElapsed);
+			transform.position = Vector3.Lerp(m_StartPosition, m_EndPosition, quadTime);
 		}
 		else{
-			Destroy(gameObject);
+			Destroy();
 		}
+	}
+	void Destroy(){
+		gameObject.SetActive(false);
 	}
 	void ShootQuestion(){
 		//Time to shoot
+		
 		if(Time.time - m_StartTime > m_BulletIntervalTime){
 			Vector3 TargetVector = m_TargetPlayer.transform.position - transform.position;
-			Bullet bullet = Instantiate(m_BulletPrefab, transform.position + 0.8f * TargetVector.normalized, transform.rotation);
-			
-			bullet.m_DirectionVector = TargetVector.normalized;
-			bullet.m_EnemyFactory = m_EnemyFactory;
-			bullet.SetChar(m_BulletText[m_MessageIndex]);
+			GameObject bullet;
+			if(m_BulletPool.TryGetInactiveObject(out bullet)){
+				bullet.transform.position = transform.position + 0.8f * TargetVector.normalized;
+				bullet.transform.rotation = transform.rotation;
 
-			if(TargetVector.x < 0){
-				bullet.transform.Rotate(0f, 0f, 180f);
-			}
-			
-			m_StartTime = Time.time;
-			m_MessageIndex++;
-			if(m_MessageIndex == m_BulletText.Length){
-				m_ShotProjectiles = true;
+				Bullet bulletScript = bullet.GetComponent<Bullet>();
+				bulletScript.m_DirectionVector = TargetVector.normalized;
+				bulletScript.SetChar(m_BulletText[m_MessageIndex]);
+
+				if(TargetVector.x < 0){
+					bullet.transform.Rotate(0f, 0f, 180f);
+				}
+				
+				bullet.gameObject.SetActive(true);
+				
+				m_StartTime = Time.time;
+				m_MessageIndex++;
+		
+				if(m_MessageIndex == m_BulletText.Length){
+					m_ShotProjectiles = true;
+				}
 			}
 		}
 	}
