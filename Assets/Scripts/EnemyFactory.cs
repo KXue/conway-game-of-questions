@@ -25,11 +25,19 @@ public class EnemyFactory : MonoBehaviour {
 	void Awake () {
 		m_EnemyPool = new Pool(m_EnemyPrefab, m_MaxEnemies, true);
 		m_EnemyPool.ForEach(SetTargetPlayer);
+		m_EnemyPool.ForEach(MakeChildOfEnemy);
 
 		int longestWord = GetLongestWord();
 		EnemyBehavior.m_LongestWord = longestWord;
+		
 		SingletonPool.ForceInstantiate(m_BulletPrefab, longestWord * 2 * m_EnemyCountCap, true);
+		SingletonPool.Instance.ForEach(MakeChildOfEnemy);
+		
 		Reset();
+		
+	}
+	private void MakeChildOfEnemy(GameObject obj){
+		obj.transform.parent = this.transform;
 	}
 	private void SetTargetPlayer(GameObject obj){
 		EnemyBehavior behavior = obj.GetComponent<EnemyBehavior>();

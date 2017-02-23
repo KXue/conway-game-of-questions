@@ -36,7 +36,11 @@ public class CharacterControl : MonoBehaviour {
 	//Sprite better be facing right by deafult
 	private PlayerDirection m_Direction = PlayerDirection.RIGHT;
 	private bool m_IsGrounded = false;
+	// private bool m_DashTriggerPressed = false;
+	// private bool m_DashTriggerUp = false;
+	// private bool m_DashTriggerDown = false;
 	private bool m_IsWalled;
+	private bool m_IsUsingController = false;
 	private bool m_IsCrouching = false;
 	private bool m_DashButtonPressed = false;
 	private bool m_JumpButtonPressed = false;
@@ -47,11 +51,12 @@ public class CharacterControl : MonoBehaviour {
 	private float m_Epsilon = 0.05f;
 	private float m_UserHAxisValue;
 	private Vector2 m_DashDirection;
-	private Vector2 m_BlinkDirection;
+	private Vector2 m_BlinkVector;
 	private Vector2 m_StoredVelocity;
 	private float m_UserRightHAxisValue;
 	private float m_UserRightVAxisValue;
 	private float m_StartDashTime = 0f;
+	private float m_DashDeadZone = 0.1f;
 	/// <summary>
 	/// Awake is called when the script instance is being loaded.
 	/// </summary>
@@ -71,42 +76,58 @@ public class CharacterControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Crouch();
-		GetBlinkDirection();
+		GetBlinkVector();
+		UpdateCursor();
 		m_UserHAxisValue = Input.GetAxis("Horizontal");
 		m_BlinkButtonPressed = Input.GetButtonDown("Blink");
 		GetJumpInput();
 		GetDashInput();
 	}
-	private void GetBlinkDirection(){
+	private void GetBlinkVector(){
 		Vector2 blinkDirection = new Vector2(Input.GetAxis("RHorizontal"), Input.GetAxis("RVertical"));
-		if(blinkDirection.sqrMagnitude < m_SqrDeadZone){
-			m_BlinkDirection = new Vector2((float)m_Direction, 0f);
+		if(blinkDirection.sqrMagnitude > m_SqrDeadZone){
+			m_IsUsingController = true;
+		}
+		else if(Mathf.Abs(Input.GetAxis("Mouse X")) > m_Epsilon &&  Mathf.Abs(Input.GetAxis("Mouse Y")) > m_Epsilon){
+			m_IsUsingController = false;
+		}
+		//&& blinkDirection.sqrMagnitude < m_SqrDeadZone
+		if(!m_IsUsingController){
+			Vector3 mousePosition = Input.mousePosition;
+			Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+			mousePosition = mouseRay.GetPoint(Mathf.Abs(mouseRay.origin.z / mouseRay.direction.z));
+			blinkDirection = (mousePosition - transform.position).normalized;
 		}
 		else{
-			m_BlinkDirection = blinkDirection.normalized;
+			if(blinkDirection.sqrMagnitude < m_SqrDeadZone){
+				blinkDirection = new Vector2((float)m_Direction, 0f);
+			}
+			else{
+				blinkDirection = blinkDirection.normalized;
+			}
 		}
-		UpdateCursor();
+		m_BlinkVector = blinkDirection * m_BlinkDistance;
 	}
 	private void UpdateCursor(){
 		float xOffset = 0;
 		float yOffset = 0;
 		Vector3 halfSize = m_SpriteRenderer.bounds.extents;
 		//right of player
-		if(m_BlinkDirection.x > 0){
+		if(m_BlinkVector.x > 0){
 			xOffset = halfSize.x;
 		}
 		else{
 			xOffset = -halfSize.x;
 		}
 		//above player
-		if(m_BlinkDirection.y > 0){
+		if(m_BlinkVector.y > 0){
 			yOffset = halfSize.y;
 		}
 		else{
 			yOffset = -halfSize.y;
 		}
 		Vector3 offsetVector = new Vector3(xOffset, yOffset);
-		Vector3 blinkLocation = transform.position + offsetVector + (Vector3)(m_BlinkDirection * m_BlinkDistance);
+		Vector3 blinkLocation = transform.position + offsetVector + (Vector3)(m_BlinkVector);
 		RaycastHit2D hit = Physics2D.Linecast(transform.position, blinkLocation, m_PlatformLayer);
 		if(hit){
 			m_CursorTransform.position = (Vector3)hit.point - offsetVector;
@@ -129,7 +150,19 @@ public class CharacterControl : MonoBehaviour {
 		}
 	}
 	private void GetDashInput(){
-		if(Input.GetButtonDown("Dash") && m_NumDashes < m_TotalNumDashes){
+		// m_DashTriggerDown = false;
+		// m_DashTriggerUp = false;
+		// if(!m_DashTriggerPressed && Input.GetAxis("Dash") > m_DashDeadZone){
+		// 	m_DashDeadZone = -0.9f;
+		// 	m_DashTriggerPressed = true;
+		// 	m_DashTriggerDown = true;
+		// }
+		// else if(m_DashTriggerPressed && Input.GetAxis("Dash") <= m_DashDeadZone){
+		// 	m_DashTriggerPressed = false;
+		// 	m_DashTriggerUp = true;
+		// }
+
+		if(!m_DashButtonPressed && m_NumDashes < m_TotalNumDashes && (Input.GetButtonDown("Dash"))){
 			m_StartDashTime = Time.time;
 			m_DashButtonPressed = true;
 			m_Anim.SetBool("Dash", true);
@@ -148,7 +181,7 @@ public class CharacterControl : MonoBehaviour {
 				m_DashDirection = new Vector2((float)m_Direction, 0);
 			}
 		}
-		else if(m_DashButtonPressed && (Input.GetButtonUp("Dash") || (Time.time) > (m_StartDashTime + m_DashTime))){
+		else if(m_DashButtonPressed && (Input.GetButtonUp("Dash") || Time.time > (m_StartDashTime + m_DashTime))){
 			m_DashButtonPressed = false;
 			m_Anim.SetBool("Dash", false);
 			m_NumDashes++;
