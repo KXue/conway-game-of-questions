@@ -84,6 +84,7 @@ public class CharacterControl : MonoBehaviour {
 		GetDashInput();
 	}
 	private void GetBlinkVector(){
+		float blinkDistance = m_BlinkDistance;
 		Vector2 blinkDirection = new Vector2(Input.GetAxis("RHorizontal"), Input.GetAxis("RVertical"));
 		if(blinkDirection.sqrMagnitude > m_SqrDeadZone){
 			m_IsUsingController = true;
@@ -96,7 +97,12 @@ public class CharacterControl : MonoBehaviour {
 			Vector3 mousePosition = Input.mousePosition;
 			Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 			mousePosition = mouseRay.GetPoint(Mathf.Abs(mouseRay.origin.z / mouseRay.direction.z));
-			blinkDirection = (mousePosition - transform.position).normalized;
+			blinkDirection = mousePosition - transform.position;
+			if(blinkDirection.magnitude < m_BlinkDistance){
+				blinkDistance = blinkDirection.magnitude;
+			}
+			blinkDirection.Normalize();
+
 		}
 		else{
 			if(blinkDirection.sqrMagnitude < m_SqrDeadZone){
@@ -106,7 +112,7 @@ public class CharacterControl : MonoBehaviour {
 				blinkDirection = blinkDirection.normalized;
 			}
 		}
-		m_BlinkVector = blinkDirection * m_BlinkDistance;
+		m_BlinkVector = blinkDirection * blinkDistance;
 	}
 	private void UpdateCursor(){
 		float xOffset = 0;
