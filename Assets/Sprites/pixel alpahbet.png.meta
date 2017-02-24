@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: dd3c500bcafd54c2a9e67373749397de
-timeCreated: 1487494645
+timeCreated: 1487886531
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -100,7 +100,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
+        y: 42
         width: 5
         height: 8
       alignment: 0
@@ -112,8 +112,8 @@ TextureImporter:
       name: AlphabetB
       rect:
         serializedVersion: 2
-        x: 5
-        y: 32
+        x: 7
+        y: 42
         width: 5
         height: 8
       alignment: 0
@@ -125,8 +125,8 @@ TextureImporter:
       name: AlphabetC
       rect:
         serializedVersion: 2
-        x: 10
-        y: 32
+        x: 14
+        y: 42
         width: 5
         height: 8
       alignment: 0
@@ -138,8 +138,8 @@ TextureImporter:
       name: AlphabetD
       rect:
         serializedVersion: 2
-        x: 15
-        y: 32
+        x: 21
+        y: 42
         width: 5
         height: 8
       alignment: 0
@@ -151,8 +151,8 @@ TextureImporter:
       name: AlphabetE
       rect:
         serializedVersion: 2
-        x: 20
-        y: 32
+        x: 28
+        y: 42
         width: 5
         height: 8
       alignment: 0
@@ -164,8 +164,8 @@ TextureImporter:
       name: AlphabetF
       rect:
         serializedVersion: 2
-        x: 25
-        y: 32
+        x: 35
+        y: 42
         width: 5
         height: 8
       alignment: 0
@@ -178,7 +178,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 24
+        y: 32
         width: 5
         height: 8
       alignment: 0
@@ -190,8 +190,8 @@ TextureImporter:
       name: AlphabetH
       rect:
         serializedVersion: 2
-        x: 5
-        y: 24
+        x: 7
+        y: 32
         width: 5
         height: 8
       alignment: 0
@@ -203,8 +203,8 @@ TextureImporter:
       name: AlphabetI
       rect:
         serializedVersion: 2
-        x: 10
-        y: 24
+        x: 14
+        y: 32
         width: 5
         height: 8
       alignment: 0
@@ -216,8 +216,8 @@ TextureImporter:
       name: AlphabetJ
       rect:
         serializedVersion: 2
-        x: 15
-        y: 24
+        x: 21
+        y: 32
         width: 5
         height: 8
       alignment: 0
@@ -229,8 +229,8 @@ TextureImporter:
       name: AlphabetK
       rect:
         serializedVersion: 2
-        x: 20
-        y: 24
+        x: 28
+        y: 32
         width: 5
         height: 8
       alignment: 0
@@ -242,8 +242,8 @@ TextureImporter:
       name: AlphabetL
       rect:
         serializedVersion: 2
-        x: 25
-        y: 24
+        x: 35
+        y: 32
         width: 5
         height: 8
       alignment: 0
@@ -256,7 +256,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 16
+        y: 22
         width: 5
         height: 8
       alignment: 0
@@ -268,8 +268,8 @@ TextureImporter:
       name: AlphabetN
       rect:
         serializedVersion: 2
-        x: 5
-        y: 16
+        x: 7
+        y: 22
         width: 5
         height: 8
       alignment: 0
@@ -281,8 +281,8 @@ TextureImporter:
       name: AlphabetO
       rect:
         serializedVersion: 2
-        x: 10
-        y: 16
+        x: 14
+        y: 22
         width: 5
         height: 8
       alignment: 0
@@ -294,8 +294,8 @@ TextureImporter:
       name: AlphabetP
       rect:
         serializedVersion: 2
-        x: 15
-        y: 16
+        x: 21
+        y: 22
         width: 5
         height: 8
       alignment: 0
@@ -307,8 +307,8 @@ TextureImporter:
       name: AlphabetQ
       rect:
         serializedVersion: 2
-        x: 20
-        y: 16
+        x: 28
+        y: 22
         width: 5
         height: 8
       alignment: 0
@@ -320,8 +320,8 @@ TextureImporter:
       name: AlphabetR
       rect:
         serializedVersion: 2
-        x: 25
-        y: 16
+        x: 35
+        y: 22
         width: 5
         height: 8
       alignment: 0
@@ -334,7 +334,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 8
+        y: 12
         width: 5
         height: 8
       alignment: 0
@@ -346,8 +346,8 @@ TextureImporter:
       name: AlphabetT
       rect:
         serializedVersion: 2
-        x: 5
-        y: 8
+        x: 7
+        y: 12
         width: 5
         height: 8
       alignment: 0
@@ -359,8 +359,8 @@ TextureImporter:
       name: AlphabetU
       rect:
         serializedVersion: 2
-        x: 10
-        y: 8
+        x: 14
+        y: 12
         width: 5
         height: 8
       alignment: 0
@@ -372,8 +372,8 @@ TextureImporter:
       name: AlphabetV
       rect:
         serializedVersion: 2
-        x: 15
-        y: 8
+        x: 21
+        y: 12
         width: 5
         height: 8
       alignment: 0
@@ -385,8 +385,8 @@ TextureImporter:
       name: AlphabetW
       rect:
         serializedVersion: 2
-        x: 20
-        y: 8
+        x: 28
+        y: 12
         width: 5
         height: 8
       alignment: 0
@@ -398,8 +398,8 @@ TextureImporter:
       name: AlphabetX
       rect:
         serializedVersion: 2
-        x: 25
-        y: 8
+        x: 35
+        y: 12
         width: 5
         height: 8
       alignment: 0
@@ -412,7 +412,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 2
         width: 5
         height: 8
       alignment: 0
@@ -424,8 +424,8 @@ TextureImporter:
       name: AlphabetZ
       rect:
         serializedVersion: 2
-        x: 5
-        y: 0
+        x: 7
+        y: 2
         width: 5
         height: 8
       alignment: 0

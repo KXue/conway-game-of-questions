@@ -8,6 +8,7 @@ public class EnemyBehavior : MonoBehaviour {
 	public string m_BulletText;
 	public float m_TransitionTime;
 	public float m_BulletIntervalTime;
+	public float m_Deviation;
 	public Vector3 m_EndPosition;
 	public CharacterControl m_TargetPlayer;
 	private  Vector3 m_StartPosition;
@@ -30,8 +31,7 @@ public class EnemyBehavior : MonoBehaviour {
 		
 		Vector3 TargetVector = m_TargetPlayer.transform.position - transform.position;
 		float angle = Mathf.Atan2(TargetVector.y, TargetVector.x) * Mathf.Rad2Deg;
-		Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-		transform.rotation = q;
+		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
 		//Holy Hell I'm sleep deprived
 		if(!m_ReachedTarget && timeFractionElapsed <= 1 && timeFractionElapsed >=0){
@@ -60,17 +60,19 @@ public class EnemyBehavior : MonoBehaviour {
 		//Time to shoot
 		
 		if(Time.time - m_StartTime > m_BulletIntervalTime){
-			Vector3 TargetVector = m_TargetPlayer.transform.position - transform.position;
+			Vector3 targetVector = m_TargetPlayer.transform.position - transform.position;
 			GameObject bullet;
 			if(SingletonPool.Instance.TryGetInactiveObject(out bullet)){
 				bullet.transform.position = transform.position;
 				bullet.transform.rotation = transform.rotation;
 
 				Bullet bulletScript = bullet.GetComponent<Bullet>();
-				bulletScript.m_DirectionVector = TargetVector.normalized;
+				Vector3 deviationVector = new Vector3 (UnityEngine.Random.Range(- m_Deviation, m_Deviation),
+				UnityEngine.Random.Range(-m_Deviation, m_Deviation));
+				bulletScript.m_DirectionVector = (deviationVector + targetVector).normalized;
 				bulletScript.SetChar(m_BulletText[m_MessageIndex]);
 
-				if(TargetVector.x < 0){
+				if(targetVector.x < 0){
 					bullet.transform.Rotate(0f, 0f, 180f);
 				}
 				
