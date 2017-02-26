@@ -1,11 +1,12 @@
 fileFormatVersion: 2
-guid: baddc95c33bda4d79a6f03f5717ce119
-timeCreated: 1488040164
+guid: 0355bf6865c88442cab0dcca60e3412d
+timeCreated: 1488141080
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: PlayButton
     21300002: CreditsButton
+    21300004: ReplayButton
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -21,7 +22,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-  isReadable: 0
+  isReadable: 1
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -30,7 +31,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: 0
-    aniso: -1
+    aniso: 1
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -76,9 +77,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 49
+        y: 110
         width: 75
-        height: 49
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -89,9 +90,22 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 61
         width: 108
-        height: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ReplayButton
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 9
+        width: 108
+        height: 44
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

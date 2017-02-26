@@ -18,7 +18,7 @@ public class CharacterControl : MonoBehaviour {
 	public float m_DashTime;
 	public float m_SqrDeadZone;
 	public float m_CollisionDeadZone;
-	public bool m_IsInvincible;
+	public bool m_IsInvincible = false;
 	public bool m_Mario;
 	public bool m_OmniDash;
 	public byte m_TotalNumJumps;
@@ -274,6 +274,9 @@ public class CharacterControl : MonoBehaviour {
 	}
 	private void Dash(){
 		if(m_DashButtonPressed){
+			if(m_IsWalled){
+				m_DashDirection *= -1;
+			}
 			m_RigidBody.velocity = m_DashDirection * m_DashSpeed;
 		}
 	}
@@ -282,12 +285,9 @@ public class CharacterControl : MonoBehaviour {
 		float left = bottomLeft.x + m_CollisionDeadZone;
 		float right = left + m_SpriteRenderer.bounds.size.x - 2 * m_CollisionDeadZone;
 		float bottom = bottomLeft.y - m_Epsilon;
-		
 		bool grounded = Physics2D.Linecast(new Vector2(left, bottom), new Vector2(right, bottom), m_PlatformLayer);
-		if(grounded != m_IsGrounded){
-			m_IsGrounded = grounded;
-			m_Anim.SetBool("Ground", grounded);
-		}
+		m_IsGrounded = grounded;
+		m_Anim.SetBool("Ground", grounded);
 		if(m_IsGrounded){
 			m_NumJumps = 0;
 			m_NumDashes = 0;
@@ -305,10 +305,8 @@ public class CharacterControl : MonoBehaviour {
 			float direction = hit.point.x - m_SpriteRenderer.bounds.center.x;
 			walled = m_UserHAxisValue * direction > 0;
 		}
-		if(walled != m_IsWalled){
-			m_IsWalled = walled;
-			m_Anim.SetBool("Wall", walled);
-		}
+		m_IsWalled = walled;
+		m_Anim.SetBool("Wall", walled);
 		if(m_IsWalled){
 			m_NumJumps = 0;
 			m_NumDashes = 0;
@@ -343,10 +341,20 @@ public class CharacterControl : MonoBehaviour {
 	/// <param name="other">The other Collider2D involved in this collision.</param>
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (!m_IsInvincible && other.gameObject.CompareTag ("Projectile") && m_PlayerHit != null)
-        {
+		if (!m_IsInvincible && other.gameObject.CompareTag ("Projectile") && m_PlayerHit != null){
 			m_Anim.SetTrigger("Dead");
             m_PlayerHit();
         }
+	}
+	/// <summary>
+	/// This function is called when the object becomes enabled and active.
+	/// </summary>
+	void OnEnable()
+	{
+		m_DashDirection = new Vector2(0, 1);
+		m_NumJumps = m_TotalNumJumps;
+		m_NumDashes = m_TotalNumDashes;
+		m_NumBlinks = m_TotalNumBlinks;
+
 	}
 }

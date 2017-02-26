@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 	public CharacterControl m_Player;
 	public EnemyFactory m_EnemyFactory;
 	public Transform m_PlayerStart;
-	public Text m_GameOverText;
+	public GameObject m_GameOverMenu;
+	public GameObject m_ScoreContainer;
 	public Text m_ScoreText;
 	public Text m_HighScoreText;
 	public float m_SlowMoTime;
@@ -32,8 +34,8 @@ public class GameManager : MonoBehaviour {
 	private void PlayerHit(){
 		m_PlayerHit = true;
 	}
-	private void SaveScore(float highScore){
-		PlayerPrefs.SetFloat("HighScore", highScore);
+	private void SaveScore(){
+		PlayerPrefs.SetFloat("HighScore", m_HighScore);
 	}	
 	private void UpdateScore(){
 		m_Score = (Time.time - m_GameStartTime);
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour {
 		m_HighScoreText.text = "High Score: " + m_HighScore.ToString("F1");
 	}
 	private IEnumerator GameLoop(){
+		DisableGameOverUI();
 		yield return StartCoroutine(GamePlaying());
 		yield return StartCoroutine(GameOver());
 
@@ -53,26 +56,30 @@ public class GameManager : MonoBehaviour {
 	}
 	private IEnumerator GamePlaying(){
 		EnableGame();
-		m_GameOverText.text = "";
 		m_GameStartTime = Time.time;
+		m_Player.enabled = true;
 		while(!m_PlayerHit){
 			UpdateScore();
 			UpdateScoreUI();
 			yield return null;
 		}
+		m_Player.enabled = false;
+		m_Player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 		BeginSlowMo(m_SlowMoTime);
 		yield return m_GameOverTransitionTime;
 	}
-
+	private void DisableGameOverUI(){
+		m_GameOverMenu.SetActive(false);
+	}
+	private void EnableGameOverUI(){
+		m_GameOverMenu.SetActive(true);
+	}
 	private IEnumerator GameOver(){
 		DisableGame();
-		GameOverUIShow();
+		EnableGameOverUI();
 		while(!m_Start){
 			yield return null;
 		}
-	}
-	private void GameOverUIShow(){
-		m_GameOverText.text = "Game Over";
 	}
 	private void BeginSlowMo(float slowMoTime){
 		Time.timeScale = 0.5f;
@@ -86,7 +93,6 @@ public class GameManager : MonoBehaviour {
 		m_EnemyFactory.gameObject.SetActive(false);
 		
 		m_Player.gameObject.SetActive(false);
-		m_Player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 		m_Player.m_PlayerHit -= PlayerHit;
 
 		
@@ -107,10 +113,11 @@ public class GameManager : MonoBehaviour {
 			m_Start = true;
 		}
 	}
-	void RestartButtonPressed(){
+	public void RestartButtonPressed(){
 		m_Start = true;
 	}
-	void ExitButtonPressed(){
+	public void ExitButtonPressed(){
+		SaveScore();
 		SceneManager.LoadScene("Menu");
 	}
 }

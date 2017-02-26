@@ -13,6 +13,12 @@ public class MenuEnable : MonoBehaviour {
 	/// </summary>
 	void OnEnable()
 	{
+		// Darn race conditions
+		StartCoroutine(ChangeButton());
+	}
+	IEnumerator ChangeButton(){
+		yield return new WaitForEndOfFrame();
+		m_EventSystem.SetSelectedGameObject(null);
 		m_EventSystem.SetSelectedGameObject(m_Firstbutton);
 	}
 
