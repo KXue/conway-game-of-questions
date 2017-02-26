@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class MenuEnable : MonoBehaviour {
 	public GameObject m_Firstbutton;
-	public Button[] m_Buttons;
 	public EventSystem m_EventSystem;
 	
 	/// <summary>
@@ -23,8 +22,5 @@ public class MenuEnable : MonoBehaviour {
 	void OnDisable()
 	{
 		m_EventSystem.SetSelectedGameObject(null);
-		foreach(GameObject child in transform){
-			child.SetActive(false);
-		}
 	}
 }

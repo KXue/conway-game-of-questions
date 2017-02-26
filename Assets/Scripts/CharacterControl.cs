@@ -45,7 +45,6 @@ public class CharacterControl : MonoBehaviour {
 	private bool m_DashButtonPressed = false;
 	private bool m_JumpButtonPressed = false;
 	private bool m_CanJump = true;
-	private bool m_CanBlink = true;
 	private bool m_PhysicsActive = true;
 	private bool m_BlinkButtonPressed = false;
 	private float m_Epsilon = 0.05f;
@@ -209,8 +208,7 @@ public class CharacterControl : MonoBehaviour {
 	}
 	//Getting Ugly
 	void Blink(){
-		if(m_BlinkButtonPressed && m_CanBlink && m_NumBlinks < m_TotalNumBlinks){
-			m_CanBlink = false;
+		if(m_BlinkButtonPressed && m_NumBlinks < m_TotalNumBlinks){
 			m_PhysicsActive = false;
 			m_StoredVelocity = m_RigidBody.velocity;
 			m_RigidBody.velocity = Vector2.zero;
@@ -225,7 +223,6 @@ public class CharacterControl : MonoBehaviour {
 		m_NumBlinks++;
 	}
 	void BlinkDoneInvoke(){
-		m_CanBlink = true;
 		m_RigidBody.velocity = m_StoredVelocity;
 		m_RigidBody.isKinematic = false; 
 		m_PhysicsActive = true;
@@ -348,6 +345,7 @@ public class CharacterControl : MonoBehaviour {
 	{
 		if (!m_IsInvincible && other.gameObject.CompareTag ("Projectile") && m_PlayerHit != null)
         {
+			m_Anim.SetTrigger("Dead");
             m_PlayerHit();
         }
 	}

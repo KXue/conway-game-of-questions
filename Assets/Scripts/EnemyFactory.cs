@@ -43,6 +43,10 @@ public class EnemyFactory : MonoBehaviour {
 		EnemyBehavior behavior = obj.GetComponent<EnemyBehavior>();
 		behavior.m_TargetPlayer = m_Player;
 	}
+	public void DisableChildren(){
+		m_EnemyPool.DisableAll();
+		SingletonPool.Instance.DisableAll();
+	}
 	int GetLongestWord(){
 		int longestWord = 0;
 		for(int i = 0; i < m_Words.Length; i++){
@@ -54,7 +58,7 @@ public class EnemyFactory : MonoBehaviour {
 	}
 	public void Reset(){
 		m_EnemyCount = m_InitialEnemyCount;
-		m_StartTime = Time.time;
+		m_StartTime = Time.time - m_EnemySpawnInterval;
 		m_EnemySpawnInterval = m_InitialEnemySpawnInterval;
 	}
 	// Update is called once per frame

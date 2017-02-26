@@ -4,33 +4,29 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour {
-	public Canvas m_MainCanvas;
-	public Canvas m_CreditsCanvas;
+	public GameObject m_MainMenu;
+	public GameObject m_CreditsMenu;
 	/// <summary>
 	/// Awake is called when the script instance is being loaded.
 	/// </summary>
 	void Awake()
 	{
-		m_MainCanvas.enabled = true;
-		m_CreditsCanvas.enabled = false;
+		MainOn();
 	}
 	public void CreditsOn(){
-		m_MainCanvas.enabled = false;
-		m_CreditsCanvas.enabled = true;
+		m_MainMenu.SetActive(false);
+		m_CreditsMenu.SetActive(true);
 	}
 	public void MainOn(){
-		m_CreditsCanvas.enabled = false;
-		m_MainCanvas.enabled = true;
+		m_CreditsMenu.SetActive(false);
+		m_MainMenu.SetActive(true);
 	}
 	public void LoadLevel(){
 		SceneManager.LoadScene("Main");
 	}
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	void Update(){
+		if(m_CreditsMenu.activeInHierarchy && Input.GetButtonUp("Cancel")){
+			MainOn();
+		}
 	}
 }
