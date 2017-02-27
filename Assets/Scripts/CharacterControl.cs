@@ -186,7 +186,7 @@ public class CharacterControl : MonoBehaviour {
 				m_DashDirection = new Vector2((float)m_Direction, 0);
 			}
 		}
-		else if(m_DashButtonPressed && (Input.GetButtonUp("Dash") || Time.time > (m_StartDashTime + m_DashTime))){
+		else if(m_DashButtonPressed && ((Input.GetButtonUp("Dash") || Input.GetAxis("Horizontal") * (float)m_Direction < -m_Epsilon) || Time.time > (m_StartDashTime + m_DashTime))){
 			m_DashButtonPressed = false;
 			m_Anim.SetBool("Dash", false);
 			m_NumDashes++;
@@ -274,9 +274,6 @@ public class CharacterControl : MonoBehaviour {
 	}
 	private void Dash(){
 		if(m_DashButtonPressed){
-			if(m_IsWalled){
-				m_DashDirection *= -1;
-			}
 			m_RigidBody.velocity = m_DashDirection * m_DashSpeed;
 		}
 	}
